@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Copyright (c) 2022, Jeffrey Bencteux
 # All rights reserved.
 
@@ -321,7 +321,8 @@ dkim_specific()
 	fi
 
 	for s in $selectors; do
-		local curr=$(dig +short txt "$s._domainkey.$d" | grep "v=DKIM")
+		local curr
+		curr=$(dig +short txt "$s._domainkey.$d" | grep "v=DKIM")
 
 		if [ "$curr" != "" ]; then
 			print_good "DKIM $full_name set ($s)"
@@ -340,8 +341,10 @@ dkim_m365()
 		return
 	fi
 
-	local s1=$(dig +short txt "selector1._domainkey.$d" | grep "v=DKIM")
-	local s2=$(dig +short txt "selector2._domainkey.$d" | grep "v=DKIM")
+	local s1
+	s1=$(dig +short txt "selector1._domainkey.$d" | grep "v=DKIM")
+	local s2
+	s2=$(dig +short txt "selector2._domainkey.$d" | grep "v=DKIM")
 
 	if [ "$s1" != "" ]; then
 		print_good "DKIM Microsoft 365 selector set: $s1 $s2"
@@ -380,7 +383,8 @@ dkim_extract_key()
 		return
 	fi
 
-	local dkim_p=$(echo "$dkim" | grep -Eo 'p=[^;]+' | sed 's/p=//g' | sed 's/[ "]//g')
+	local dkim_p
+	dkim_p=$(echo "$dkim" | grep -Eo 'p=[^;]+' | sed 's/p=//g' | sed 's/[ "]//g')
 
 	print_info "Extracting DKIM public key..."
 
@@ -399,7 +403,8 @@ dkim_crypto_keysize()
 		return
 	fi
 
-	local keysize=$(echo "$dkim_parsed_key" | grep -E 'Public-Key:[ ]+\([0-9]+[ ]+bit\)' | grep -Eo '[0-9]+')
+	local keysize
+	keysize=$(echo "$dkim_parsed_key" | grep -E 'Public-Key:[ ]+\([0-9]+[ ]+bit\)' | grep -Eo '[0-9]+')
 
 	if [ "$keysize" -lt $dkim_key_minsize ]; then
 		print_medium "DKIM public key size is < $dkim_key_minsize bits ($keysize bits)"
