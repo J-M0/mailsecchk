@@ -68,7 +68,7 @@ print_info()
 d=""
 spf_recursive=0
 spf_specific_found=0
-dkim_selectors_file="./dkim_selectors.txt"
+dkim_selectors="s1 s2 s3 s4 google k1 mxvault dkim mail default"
 dkim_extract=0
 dkim_key_outfile="./dkim_pubkey.pem"
 # Quite a hard choice of what is a good key size here, for now keeping to < 2048 bits
@@ -360,7 +360,7 @@ dkim_well_known()
 {
 	log "Trying well-known selectors..."
 
-	while read -r s; do
+	for s in $dkim_selectors; do
 		print_info "$s"
 
 		dkim=$(dig +short txt "$s._domainkey.$d" | grep "v=DKIM")
@@ -369,7 +369,7 @@ dkim_well_known()
 			print_good "DKIM found with selector $s: $dkim"
 			return
 		fi
-	done < "$dkim_selectors_file"
+	done
 
 	print_medium "DKIM could not be found, try obtaining a valid selector for manual review."
 }
