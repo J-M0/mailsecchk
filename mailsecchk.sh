@@ -5,7 +5,7 @@
 # This source code is licensed under the GPLv3 license found in the
 # LICENSE file in the root directory of this source tree.
 
-# shellcheck disable=SC3043
+## shellcheck disable=SC3043
 
 usage()
 {
